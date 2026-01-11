@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>PRISM – Real-Time Reconciliation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Socket.IO -->
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- HEADER -->
+    <header class="header">
+      <div class="brand">
+        <img src="logo.png" class="logo" />
+        <span>PRISM</span>
+      </div>
+      <div class="live"><span class="dot"></span> Live</div>
+    </header>
+
+    <!-- BACKEND ERROR BANNER -->
+    <div id="errorBanner" class="banner hidden">⚠ Backend not reachable</div>
+
+    <main class="container">
+      <!-- KPI CARDS -->
+      <section class="kpis">
+        <div class="kpi">
+          <h4>Total</h4>
+          <p id="kpiTotal">0</p>
+        </div>
+
+        <div class="kpi success">
+          <h4>Matched</h4>
+          <p id="kpiMatched">0</p>
+          <span id="kpiMatchedPct">0%</span>
+        </div>
+
+        <div class="kpi warning">
+          <h4>Pending</h4>
+          <p id="kpiPending">0</p>
+          <span id="kpiPendingPct">0%</span>
+        </div>
+
+        <div class="kpi danger">
+          <h4>Mismatch</h4>
+          <p id="kpiMismatch">0</p>
+          <span id="kpiMismatchPct">0%</span>
+        </div>
+      </section>
+
+      <!-- CHARTS -->
+      <section class="charts">
+        <div class="chart-box">
+          <h3>Transaction Volume</h3>
+          <canvas id="volumeChart"></canvas>
+        </div>
+
+        <div class="chart-box">
+          <h3>Status Distribution</h3>
+          <canvas id="statusChart"></canvas>
+        </div>
+      </section>
+
+      <!-- FILTER -->
+      <div class="filter-bar">
+        <label>Scenario:</label>
+        <select id="scenarioFilter">
+          <option value="">All</option>
+          <option value="PERFECT_MATCH">Perfect Match</option>
+          <option value="AMOUNT_MISMATCH">Amount Mismatch</option>
+          <option value="STATUS_CONFLICT">Status Conflict</option>
+          <option value="MISSING_EVENT">Missing Event</option>
+          <option value="DELAYED_BANK">Delayed Bank</option>
+          <option value="DUPLICATE_EVENT">Duplicate Event</option>
+        </select>
+      </div>
+
+      <!-- TABLE -->
+      <section class="table-box">
+        <div class="table-header">
+          <h3>Recent Transactions</h3>
+          <span>Last update: <span id="lastUpdate">--</span></span>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Scenario</th>
+              <th>Time</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="transactionsBody">
+            <tr>
+              <td colspan="6" class="loading">No transactions yet</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+
+    <!-- MODAL -->
+    <div id="detailModal" class="modal">
+      <div class="modal-content">
+        <h3>Transaction Detail</h3>
+
+        <p><strong>ID:</strong> <span id="detailId"></span></p>
+        <p><strong>Amount:</strong> ₹<span id="detailAmount"></span></p>
+        <p>
+          <strong>Result:</strong>
+          <span id="detailResult" class="badge"></span>
+        </p>
+
+        <p id="detailReason" class="reason-box"></p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Source</th>
+              <th>Amount</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="detailSources"></tbody>
+        </table>
+
+        <button onclick="closeModal()">Close</button>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
